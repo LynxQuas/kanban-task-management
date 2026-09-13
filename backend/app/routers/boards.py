@@ -13,6 +13,18 @@ def get_boards(db: Session = Depends(get_db)):
     boards = db.query(Board).all()
     return boards
 
+@router.delete("/{board_id}")
+def delete_board(board_id: int, db: Session = Depends(get_db)):
+    board = db.query(Board).filter(Board.id == board_id).first()
+
+    if not board:
+        raise HTTPException(status_code=404, detail="Board not found")
+
+    db.delete(board)
+    db.commit()
+
+    return {"message": "Board deleted successfully"}
+
 @router.get("/{board_id}", response_model=BoardResponse)
 def get_board(board_id: int, db: Session = Depends(get_db)):
     board = db.query(Board).filter(Board.id == board_id).first()
@@ -43,3 +55,5 @@ def create_board( board_data: BoardCreate, db: Session = Depends(get_db)):
     db.refresh(board)
 
     return board
+
+

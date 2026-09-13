@@ -14,4 +14,4 @@ class Board(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
 
-    columns: Mapped[list["Column"]] = relationship(back_populates="board")
+    columns: Mapped[list["Column"]] = relationship(back_populates="board", cascade="all, delete-orphan")

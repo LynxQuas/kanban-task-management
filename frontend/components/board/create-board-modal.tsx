@@ -28,7 +28,7 @@ const CreateBoardModal = ({ isOpen, onClose }: CreateBoardModalProps) => {
                 queryKey: ["boards"],
             });
 
-            router.push(`/board/${newBoard.id}`);
+            router.push(`/boards/${newBoard.id}`);
 
             onClose();
         },

@@ -33,6 +33,7 @@ const BoardDetail = ({ board_id }: BoardDetailProps) => {
     return (
         <div className="flex h-full flex-col">
             <BoardDetailHeader
+                board_id={board.id}
                 board_name={board.name}
                 columns={board.columns}
             />

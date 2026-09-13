@@ -20,4 +20,4 @@ class Column(Base):
     board_id: Mapped[int] = mapped_column( ForeignKey("boards.id"), nullable=False)
     board: Mapped["Board"] = relationship( back_populates="columns")
 
-    tasks: Mapped[list["Task"]] = relationship(back_populates="column")
+    tasks: Mapped[list["Task"]] = relationship(back_populates="column", cascade="all, delete-orphan")

@@ -84,7 +84,7 @@ const Navbar = () => {
                     <aside className="absolute left-0 top-0 flex h-full w-[290px] flex-col border-r border-white/10 bg-[#2B2C37] shadow-2xl">
                         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-5">
                             <Link
-                                href="/board"
+                                href="/boards"
                                 onClick={closeMobileNav}
                                 className="text-xl font-bold tracking-tight text-indigo-500"
                             >
@@ -141,12 +141,12 @@ const Navbar = () => {
 
                                 {boards.map((board) => {
                                     const isActive =
-                                        pathname === `/board/${board.id}`;
+                                        pathname === `/boards/${board.id}`;
 
                                     return (
                                         <Link
                                             key={board.id}
-                                            href={`/board/${board.id}`}
+                                            href={`/boards/${board.id}`}
                                             onClick={closeMobileNav}
                                             className={`group relative flex items-center gap-3 rounded-r-xl px-5 py-3 text-sm font-medium transition-all ${
                                                 isActive
@@ -261,12 +261,12 @@ const Navbar = () => {
 
                                 {boards.map((board) => {
                                     const isActive =
-                                        pathname === `/board/${board.id}`;
+                                        pathname === `/boards/${board.id}`;
 
                                     return (
                                         <Link
                                             key={board.id}
-                                            href={`/board/${board.id}`}
+                                            href={`/boards/${board.id}`}
                                             className={`group relative flex items-center gap-3 rounded-r-xl px-6 py-3 text-sm font-medium transition-all ${
                                                 isActive
                                                     ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/10"

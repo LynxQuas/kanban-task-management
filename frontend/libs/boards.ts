@@ -28,7 +28,7 @@ export async function createBoard(boardData: CreateBoardInput): Promise<Board> {
     return response.json();
 }
 
-export async function getBoard(boardId: string): Promise<Board>{
+export async function getBoard(boardId: string): Promise<Board> {
     const response = await fetch(`${API_URL}/boards/${boardId}`);
 
     if (!response.ok) {
@@ -36,4 +36,14 @@ export async function getBoard(boardId: string): Promise<Board>{
     }
 
     return response.json();
+}
+
+export async function deleteBoard(board_id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/boards/${board_id}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to delete board");
+    }
 }

@@ -4,7 +4,6 @@ import { LayoutDashboard, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getBoards } from "@/libs/boards";
-import Link from "next/link";
 
 const BoardPage = () => {
     const {
@@ -39,7 +38,7 @@ const BoardPage = () => {
                     </h1>
 
                     <p className="mt-2 text-sm text-gray-500">
-                        We couldn't load your boards.
+                        We couldn&apos;t load your boards.
                     </p>
                 </div>
             </main>
@@ -62,17 +61,14 @@ const BoardPage = () => {
                     </h1>
 
                     <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500">
-                        Boards help you organize projects, track tasks,
-                        and keep your work moving forward.
+                        Boards help you organize projects, track tasks, and keep
+                        your work moving forward.
                     </p>
 
-                    <Link
-                        href="/board"
-                        className="mt-7 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/10 transition hover:bg-indigo-500"
-                    >
+                    <button className="mt-7 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/10 transition hover:bg-indigo-500">
                         <Plus size={17} />
                         Create your first board
-                    </Link>
+                    </button>
                 </div>
             </main>
         );
@@ -99,4 +95,3 @@ const BoardPage = () => {
 };
 
 export default BoardPage;
-
