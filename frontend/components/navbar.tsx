@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getBoards } from "@/libs/boards";
 import { Board } from "@/libs/types/board";
-import CreateBoardModal from "./board/create-board-modal";
+import CreateBoardModal from "./board/board-modal";
 
 const Navbar = () => {
     const [isNavOpen, setIsNavOpen] = useState(true);

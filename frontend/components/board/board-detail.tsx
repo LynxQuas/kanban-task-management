@@ -39,7 +39,7 @@ const BoardDetail = ({ board_id }: BoardDetailProps) => {
             />
 
             <div className="min-h-0 flex-1 overflow-x-auto bg-[#20212C]">
-                <div className="flex h-full min-w-max gap-5 p-5">
+                <div className="flex min-w-max gap-5 p-5">
                     {board.columns.map((column) => {
                         const taskCount = column.tasks?.length ?? 0;
                         return (

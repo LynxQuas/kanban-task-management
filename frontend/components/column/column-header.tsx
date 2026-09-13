@@ -25,7 +25,7 @@ const ColumnHeader = ({ column, taskCount }: ColumnHeaderProps) => {
                 </span>
             </div>
 
-            <div className=" rounded-xl border border-white/5 bg-[#252631] p-3 transition-colors">
+            <div className="min-h-150  md:min-h-170 rounded-xl border border-white/5 bg-[#252631] p-3 transition-colors">
                 <Tasks tasks={column.tasks} />
             </div>
         </div>
