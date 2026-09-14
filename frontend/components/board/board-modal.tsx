@@ -1,5 +1,5 @@
 import ModalLayout from "../modal-layout";
-import BoardForm from "./board-form";
+import BoardForm from "./board-form/board-form";
 
 type CreateBoardModalProps = {
     isOpen: boolean;
