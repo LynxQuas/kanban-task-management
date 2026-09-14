@@ -4,7 +4,6 @@ import {
     EllipsisVertical,
     LayoutDashboard,
     Plus,
-    Pencil,
     Trash2,
     TriangleAlert,
 } from "lucide-react";
@@ -19,6 +18,7 @@ import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { deleteBoard } from "@/libs/boards";
 import ModalLayout from "../modal-layout";
+import DropDownActions from "../ui/drop-down-actions";
 
 type BoardDetailHeaderProps = {
     board_name: string;
@@ -125,27 +125,11 @@ const BoardDetailHeader = ({
                         </button>
 
                         {isMenuOpen && (
-                            <div className="absolute right-0 top-12 z-50 w-48 overflow-hidden rounded-lg border border-white/10 bg-[#2B2C37] p-1 shadow-xl">
-                                <button
-                                    type="button"
-                                    onClick={handleEditBoard}
-                                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
-                                >
-                                    <Pencil size={15} />
-
-                                    <span>Edit board</span>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={handleDeleteBoard}
-                                    className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-red-400 transition hover:bg-red-400/10 hover:text-red-300"
-                                >
-                                    <Trash2 size={15} />
-
-                                    <span>Delete board</span>
-                                </button>
-                            </div>
+                            <DropDownActions
+                                handleDelete={handleDeleteBoard}
+                                handleEdit={handleEditBoard}
+                                label="board"
+                            />
                         )}
                     </div>
                 </div>

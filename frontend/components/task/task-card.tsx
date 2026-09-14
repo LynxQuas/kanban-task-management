@@ -1,6 +1,8 @@
 "use client";
 import { Task } from "@/libs/types/task";
 import { CalendarDays, Circle, EllipsisVertical, Flag } from "lucide-react";
+import DropDownActions from "../ui/drop-down-actions";
+import { useState } from "react";
 
 type Priority = "Low" | "Medium" | "High";
 
@@ -15,6 +17,15 @@ type TaskCardProps = {
 };
 
 const TaskCard = ({ task }: TaskCardProps) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleEditTask = () => {
+        console.log("Edit task", task.id);
+    };
+
+    const handleDeleteTask = () => {
+        console.log("Delete task", task.id);
+    };
     return (
         <article className=" group rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-white/10 hover:bg-[#30313D] hover:shadow-lg ">
             <div className="flex items-start justify-between gap-3">
@@ -29,12 +40,22 @@ const TaskCard = ({ task }: TaskCardProps) => {
                     </h3>
                 </div>
 
-                <button
-                    type="button"
-                    className="shrink-0 rounded-md p-1 text-gray-600 opacity-0 transition hover:bg-white/5 hover:text-gray-300 group-hover:opacity-100 "
-                >
-                    <EllipsisVertical size={16} />
-                </button>
+                <div className="relative">
+                    <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        type="button"
+                        className="shrink-0 rounded-md p-1 text-gray-600 opacity-0 transition hover:bg-white/5 hover:text-gray-300 group-hover:opacity-100 "
+                    >
+                        <EllipsisVertical size={16} />
+                    </button>
+                    {isMenuOpen && (
+                        <DropDownActions
+                            handleEdit={handleEditTask}
+                            label="task"
+                            handleDelete={handleDeleteTask}
+                        />
+                    )}
+                </div>
             </div>
 
             {task.description && (
