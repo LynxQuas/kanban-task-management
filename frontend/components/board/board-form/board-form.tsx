@@ -1,7 +1,7 @@
 "use client";
 import { createBoard } from "@/libs/boards";
 import { CreateBoardForm, createBoardSchema } from "@/libs/schemas/board";
-import { CreateBoardInput } from "@/libs/types/board";
+import { Board, CreateBoardInput } from "@/libs/types/board";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -13,9 +13,11 @@ import BoardFormName from "./board-form-name";
 
 type BoardFormProps = {
     onClose: () => void;
+    boardData?: Board;
 };
 
-const BoardForm = ({ onClose }: BoardFormProps) => {
+const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
+    console.log(boardData);
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -46,9 +48,11 @@ const BoardForm = ({ onClose }: BoardFormProps) => {
         resolver: zodResolver(createBoardSchema),
 
         defaultValues: {
-            name: "",
+            name: boardData?.name ?? "",
 
-            columns: [
+            columns: boardData?.columns.map((column) => ({
+                name: column.name,
+            })) ?? [
                 {
                     id: crypto.randomUUID(),
                     name: "Todo",

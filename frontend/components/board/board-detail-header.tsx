@@ -13,27 +13,25 @@ import { useRouter } from "next/navigation";
 
 import CreateTaskModal from "./create-task-modal";
 
-import { Column } from "@/libs/types/board";
+import { Board } from "@/libs/types/board";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { deleteBoard } from "@/libs/boards";
 import ModalLayout from "../modal-layout";
 import DropDownActions from "../ui/drop-down-actions";
+import BoardModal from "./board-modal";
 
 type BoardDetailHeaderProps = {
-    board_name: string;
-    board_id: number;
-    columns: Column[];
+    boardData: Board;
 };
 
 const BoardDetailHeader = ({
-    board_name,
-    columns,
-    board_id,
+    boardData: { id: board_id, name: board_name, columns },
 }: BoardDetailHeaderProps) => {
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [editBoardModalOpen, setEditBoardModalOpen] = useState(false);
 
     const queryClient = useQueryClient();
     const router = useRouter();
@@ -59,6 +57,7 @@ const BoardDetailHeader = ({
 
     const handleEditBoard = () => {
         setIsMenuOpen(false);
+        setEditBoardModalOpen(true);
 
         console.log("Edit board");
     };
@@ -139,6 +138,16 @@ const BoardDetailHeader = ({
                 columns={columns}
                 isOpen={isTaskModalOpen}
                 onClose={() => setIsTaskModalOpen(false)}
+            />
+
+            <BoardModal
+                isOpen={editBoardModalOpen}
+                onClose={() => setEditBoardModalOpen(false)}
+                boardData={{
+                    id: board_id,
+                    name: board_name,
+                    columns: columns,
+                }}
             />
 
             <ModalLayout

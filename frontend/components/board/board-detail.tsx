@@ -32,11 +32,7 @@ const BoardDetail = ({ board_id }: BoardDetailProps) => {
 
     return (
         <div className="flex h-full flex-col">
-            <BoardDetailHeader
-                board_id={board.id}
-                board_name={board.name}
-                columns={board.columns}
-            />
+            <BoardDetailHeader boardData={board} />
 
             <div className="min-h-0 flex-1 overflow-x-auto bg-[#20212C]">
                 <div className="flex min-w-max gap-5 p-5">

@@ -4,8 +4,11 @@ import { LayoutDashboard, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getBoards } from "@/libs/boards";
+import { useState } from "react";
+import BoardModal from "@/components/board/board-modal";
 
 const BoardPage = () => {
+    const [openBoardCreateModal, setOpenBoardCreateModal] = useState(false);
     const {
         data: boards = [],
         isLoading,
@@ -47,30 +50,40 @@ const BoardPage = () => {
 
     if (boards.length === 0) {
         return (
-            <main className="flex min-h-screen items-center justify-center bg-[#20212C] px-6">
-                <div className="w-full max-w-lg text-center">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-[#2B2C37] shadow-xl shadow-black/10">
-                        <LayoutDashboard
-                            size={28}
-                            className="text-indigo-400"
-                        />
+            <>
+                <main className="flex min-h-screen items-center justify-center bg-[#20212C] px-6">
+                    <div className="w-full max-w-lg text-center">
+                        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-[#2B2C37] shadow-xl shadow-black/10">
+                            <LayoutDashboard
+                                size={28}
+                                className="text-indigo-400"
+                            />
+                        </div>
+
+                        <h1 className="text-2xl font-semibold tracking-tight text-white">
+                            Create your first board
+                        </h1>
+
+                        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500">
+                            Boards help you organize projects, track tasks, and
+                            keep your work moving forward.
+                        </p>
+
+                        <button
+                            onClick={() => setOpenBoardCreateModal(true)}
+                            className="mt-7 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/10 transition hover:bg-indigo-500"
+                        >
+                            <Plus size={17} />
+                            Create your first board
+                        </button>
                     </div>
+                </main>
 
-                    <h1 className="text-2xl font-semibold tracking-tight text-white">
-                        Create your first board
-                    </h1>
-
-                    <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500">
-                        Boards help you organize projects, track tasks, and keep
-                        your work moving forward.
-                    </p>
-
-                    <button className="mt-7 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/10 transition hover:bg-indigo-500">
-                        <Plus size={17} />
-                        Create your first board
-                    </button>
-                </div>
-            </main>
+                <BoardModal
+                    isOpen={openBoardCreateModal}
+                    onClose={() => setOpenBoardCreateModal(false)}
+                />
+            </>
         );
     }
 
