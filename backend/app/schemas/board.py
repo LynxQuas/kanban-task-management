@@ -12,6 +12,18 @@ class BoardCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     columns: list[ColumnCreate]
 
+
+class ColumnUpdate(BaseModel):
+    id: int | None = None
+    name: str = Field(min_length=1, max_length=100)
+    position: int
+
+
+class BoardUpdate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    columns: list[ColumnUpdate]
+
+
 class ColumnResponse(BaseModel):
     id: int
     name: str

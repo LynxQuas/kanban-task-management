@@ -38,6 +38,28 @@ export async function getBoard(boardId: string): Promise<Board> {
     return response.json();
 }
 
+export async function updateBoard({
+    boardId,
+    data,
+}: {
+    boardId: number;
+    data: CreateBoardInput;
+}): Promise<Board> {
+    const response = await fetch(`${API_URL}/boards/${boardId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to update board");
+    }
+
+    return response.json();
+}
+
 export async function deleteBoard(board_id: number): Promise<void> {
     const response = await fetch(`${API_URL}/boards/${board_id}`, {
         method: "DELETE",

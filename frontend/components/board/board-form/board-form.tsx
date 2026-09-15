@@ -1,5 +1,5 @@
 "use client";
-import { createBoard } from "@/libs/boards";
+import { createBoard, updateBoard } from "@/libs/boards";
 import { CreateBoardForm, createBoardSchema } from "@/libs/schemas/board";
 import { Board, CreateBoardInput } from "@/libs/types/board";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +17,8 @@ type BoardFormProps = {
 };
 
 const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
-    console.log(boardData);
+    const isEditing = !!boardData;
+
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -30,6 +31,24 @@ const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
             });
 
             router.push(`/boards/${newBoard.id}`);
+
+            onClose();
+        },
+
+        onError: (error) => {
+            console.error(error);
+        },
+    });
+
+    const { mutate: updateBoardMutation, isPending: isUpdating } = useMutation({
+        mutationFn: updateBoard,
+
+        onSuccess: (updatedBoard) => {
+            queryClient.setQueryData(["board", updatedBoard.id], updatedBoard);
+
+            queryClient.invalidateQueries({
+                queryKey: ["boards"],
+            });
 
             onClose();
         },
@@ -52,6 +71,7 @@ const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
 
             columns: boardData?.columns.map((column) => ({
                 name: column.name,
+                id: column.id.toString(),
             })) ?? [
                 {
                     id: crypto.randomUUID(),
@@ -65,22 +85,30 @@ const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
         },
     });
 
-    const createNewBoardHandler = (data: CreateBoardForm) => {
-        const boardData: CreateBoardInput = {
+    const submitBoardHandler = (data: CreateBoardForm) => {
+        const board: CreateBoardInput = {
             name: data.name,
 
             columns: data.columns.map((column, index) => ({
                 name: column.name,
+                id: Number(column.id),
                 position: index,
             })),
         };
 
-        createBoardMutation(boardData);
+        if (isEditing && boardData) {
+            updateBoardMutation({
+                boardId: boardData.id,
+                data: board,
+            });
+        } else {
+            createBoardMutation(board);
+        }
     };
 
     return (
         <form
-            onSubmit={handleSubmit(createNewBoardHandler)}
+            onSubmit={handleSubmit(submitBoardHandler)}
             className="text-white"
         >
             <BoardFormHeader onClose={onClose} />
@@ -97,7 +125,11 @@ const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
 
             <div className="my-6 border-t border-white/10" />
 
-            <FormActions onClose={onClose} isPending={isPending} />
+            <FormActions
+                isEditing={isEditing}
+                onClose={onClose}
+                isPending={isPending}
+            />
         </form>
     );
 };

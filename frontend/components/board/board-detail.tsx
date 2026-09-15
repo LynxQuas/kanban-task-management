@@ -5,27 +5,39 @@ import { useQuery } from "@tanstack/react-query";
 import BoardDetailHeader from "./board-detail-header";
 import { Board } from "@/libs/types/board";
 import ColumnHeader from "../column/column-header";
+import LoadingSpinner from "../ui/loading-spinner";
+import ErrorUi from "../ui/error-ui";
 
 type BoardDetailProps = {
     board_id: string;
 };
 
 const BoardDetail = ({ board_id }: BoardDetailProps) => {
+    const boardId = Number(board_id);
+
     const {
         data: board,
         isLoading,
         isError,
     } = useQuery<Board>({
-        queryKey: ["board", board_id],
+        queryKey: ["board", boardId],
         queryFn: () => getBoard(board_id),
     });
 
     if (isLoading) {
-        return <div className="p-6 text-white">Loading...</div>;
+        return (
+            <div className="flex h-full min-h-screen items-center justify-center bg-[#20212C]">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (isError || !board) {
-        return <div className="p-6 text-white">Failed to load board.</div>;
+        return (
+            <div className="flex h-full min-h-screen items-center justify-center bg-[#20212C]">
+                <ErrorUi errorText="Failed to load board" />
+            </div>
+        );
     }
 
     console.log(board);
