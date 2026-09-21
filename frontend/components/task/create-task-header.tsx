@@ -1,12 +1,16 @@
 import { Plus, X } from "lucide-react";
-import React from "react";
 
 type CreateTaskHeaderProps = {
     onClose: () => void;
     isPending: boolean;
+    isEditing: boolean;
 };
 
-const CreateTaskHeader = ({ onClose, isPending }: CreateTaskHeaderProps) => {
+const CreateTaskHeader = ({
+    onClose,
+    isPending,
+    isEditing,
+}: CreateTaskHeaderProps) => {
     return (
         <div className="mb-7 flex items-start justify-between">
             <div>
@@ -26,7 +30,7 @@ const CreateTaskHeader = ({ onClose, isPending }: CreateTaskHeaderProps) => {
             <button
                 type="button"
                 onClick={onClose}
-                disabled={isPending}
+                disabled={isPending || isEditing}
                 className=" flex h-8 w-8 items-center justify-center rounded-md text-gray-400 transition hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 "
             >
                 <X size={18} />

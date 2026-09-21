@@ -1,21 +1,11 @@
 "use client";
 
-import {
-    EllipsisVertical,
-    LayoutDashboard,
-    Plus,
-    Trash2,
-    TriangleAlert,
-} from "lucide-react";
-import { useRef, useState } from "react";
+import { LayoutDashboard, Plus, Trash2, TriangleAlert } from "lucide-react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
-import CreateTaskModal from "./create-task-modal";
-
+import CreateTaskModal from "../task/task-modal";
 import { Board } from "@/libs/types/board";
-import { useEscapeKey } from "@/hooks/useEscapeKey";
-import { useClickOutside } from "@/hooks/useClickOutside";
 import { deleteBoard } from "@/libs/boards";
 import ModalLayout from "../modal-layout";
 import DropDownActions from "../ui/drop-down-actions";
@@ -29,14 +19,12 @@ const BoardDetailHeader = ({
     boardData: { id: board_id, name: board_name, columns },
 }: BoardDetailHeaderProps) => {
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [editBoardModalOpen, setEditBoardModalOpen] = useState(false);
 
     const queryClient = useQueryClient();
     const router = useRouter();
-
-    const menuRef = useRef<HTMLDivElement>(null);
 
     const { mutate: deleteBoardMutation, isPending } = useMutation({
         mutationFn: deleteBoard,
@@ -55,29 +43,9 @@ const BoardDetailHeader = ({
         },
     });
 
-    const handleEditBoard = () => {
-        setIsMenuOpen(false);
-        setEditBoardModalOpen(true);
-
-        console.log("Edit board");
-    };
-
-    const handleDeleteBoard = () => {
-        setIsMenuOpen(false);
-        setIsDeleteModalOpen(true);
-    };
-
     const handleConfirmDelete = () => {
         deleteBoardMutation(board_id);
     };
-
-    useClickOutside(menuRef, () => {
-        setIsMenuOpen(false);
-    });
-
-    useEscapeKey(() => {
-        setIsMenuOpen(false);
-    });
 
     return (
         <>
@@ -112,25 +80,12 @@ const BoardDetailHeader = ({
                         <span className="hidden sm:block">Add new task</span>
                     </button>
 
-                    <div ref={menuRef} className="relative">
-                        <button
-                            type="button"
-                            aria-label="Board options"
-                            aria-expanded={isMenuOpen}
-                            onClick={() => setIsMenuOpen((open) => !open)}
-                            className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/5 text-gray-400 transition hover:bg-white/5 hover:text-white"
-                        >
-                            <EllipsisVertical size={18} />
-                        </button>
-
-                        {isMenuOpen && (
-                            <DropDownActions
-                                handleDelete={handleDeleteBoard}
-                                handleEdit={handleEditBoard}
-                                label="board"
-                            />
-                        )}
-                    </div>
+                    <DropDownActions
+                        handleEdit={() => setEditBoardModalOpen(true)}
+                        handleDelete={() => setIsDeleteModalOpen(true)}
+                        label="board"
+                        iconSize={16}
+                    />
                 </div>
             </header>
 

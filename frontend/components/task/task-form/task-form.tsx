@@ -1,8 +1,11 @@
+"use client";
+
 import { CreateTaskForm, createTaskSchema } from "@/libs/schemas/task";
-import { createTask } from "@/libs/tasks";
+import { createTask, updateTask } from "@/libs/tasks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+
 import CreateTaskHeader from "../create-task-header";
 import TaskTitle from "./task-title";
 import TaskDescription from "./task-description";
@@ -11,15 +14,19 @@ import TaskPriority from "../task-priority";
 import TaskDueDate from "./task-due-date";
 
 import { Column } from "@/libs/types/board";
+import { Task } from "@/libs/types/task";
 import FormActions from "@/components/ui/form-actions";
 
 type TaskFormProps = {
     onClose: () => void;
     columns: Column[];
+    task?: Task;
 };
 
-const TaskForm = ({ onClose, columns }: TaskFormProps) => {
+const TaskForm = ({ onClose, columns, task }: TaskFormProps) => {
     const queryClient = useQueryClient();
+
+    const isEditing = !!task;
 
     const {
         register,
@@ -29,20 +36,27 @@ const TaskForm = ({ onClose, columns }: TaskFormProps) => {
     } = useForm<CreateTaskForm>({
         resolver: zodResolver(createTaskSchema),
         defaultValues: {
-            title: "",
-            description: "",
-            priority: "Medium",
-            due_date: "",
+            title: task?.title ?? "",
+            description: task?.description ?? "",
+            priority: task?.priority ?? "Medium",
+            due_date: task?.due_date ?? "",
+            column_id: task?.column_id,
         },
     });
 
     const {
-        mutate: createTaskMutation,
+        mutate: saveTaskMutation,
         isPending,
         error,
         isError,
     } = useMutation({
-        mutationFn: createTask,
+        mutationFn: (data: CreateTaskForm) => {
+            if (isEditing) {
+                return updateTask(task.id, data);
+            }
+
+            return createTask(data);
+        },
 
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -54,13 +68,17 @@ const TaskForm = ({ onClose, columns }: TaskFormProps) => {
         },
     });
 
-    const createTaskHandler = (data: CreateTaskForm) => {
-        console.log("createTaskHandler", data);
-        createTaskMutation(data);
+    const taskSubmitHandler = (data: CreateTaskForm) => {
+        saveTaskMutation(data);
     };
+
     return (
-        <form onSubmit={handleSubmit(createTaskHandler)} className="text-white">
-            <CreateTaskHeader onClose={onClose} isPending={isPending} />
+        <form onSubmit={handleSubmit(taskSubmitHandler)} className="text-white">
+            <CreateTaskHeader
+                onClose={onClose}
+                isPending={isPending}
+                isEditing={isEditing}
+            />
 
             <TaskTitle
                 register={register}
@@ -99,7 +117,12 @@ const TaskForm = ({ onClose, columns }: TaskFormProps) => {
                     {error.message}
                 </p>
             )}
-            <FormActions isPending={isPending} onClose={onClose} />
+
+            <FormActions
+                isPending={isPending}
+                onClose={onClose}
+                isEditing={isEditing}
+            />
         </form>
     );
 };

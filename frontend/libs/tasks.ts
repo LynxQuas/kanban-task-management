@@ -28,3 +28,32 @@ export async function createTask(taskData: CreateTaskForm): Promise<Task> {
 
     return response.json();
 }
+
+export async function updateTask(
+    taskId: number,
+    taskData: CreateTaskForm,
+): Promise<Task> {
+    const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(taskData),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to update task");
+    }
+
+    return response.json();
+}
+
+export async function deleteTask(taskId: number): Promise<void> {
+    const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to delete task");
+    }
+}
