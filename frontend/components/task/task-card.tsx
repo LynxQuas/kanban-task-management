@@ -15,6 +15,7 @@ import { useState } from "react";
 import DropDownActions from "../ui/drop-down-actions";
 import ModalLayout from "../modal-layout";
 import TaskModal from "./task-modal";
+import { Column } from "@/libs/types/board";
 
 type Priority = "Low" | "Medium" | "High";
 
@@ -26,9 +27,10 @@ const priorityStyles: Record<Priority, string> = {
 
 type TaskCardProps = {
     task: Task;
+    columns: Column[];
 };
 
-const TaskCard = ({ task }: TaskCardProps) => {
+const TaskCard = ({ task, columns }: TaskCardProps) => {
     const queryClient = useQueryClient();
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -63,7 +65,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
     return (
         <>
             <TaskModal
-                columns={[]}
+                columns={columns}
                 task={task}
                 isOpen={isTaskModalOpen}
                 onClose={() => setIsTaskModalOpen(false)}

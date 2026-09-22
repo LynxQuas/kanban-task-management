@@ -6,9 +6,10 @@ type ColumnHeaderProps = {
     column: Column;
     taskCount: number;
     tasks: Task[];
+    columns: Column[];
 };
 
-const ColumnHeader = ({ column, taskCount }: ColumnHeaderProps) => {
+const ColumnHeader = ({ column, taskCount, columns }: ColumnHeaderProps) => {
     return (
         <div key={column.id} className="flex w-85 shrink-0 flex-col">
             <div className="mb-3 flex items-center justify-between px-1">
@@ -26,7 +27,7 @@ const ColumnHeader = ({ column, taskCount }: ColumnHeaderProps) => {
             </div>
 
             <div className="min-h-150  md:min-h-170 rounded-xl border border-white/5 bg-[#252631] p-3 transition-colors">
-                <Tasks tasks={column.tasks} />
+                <Tasks tasks={column.tasks} columns={columns} />
             </div>
         </div>
     );
