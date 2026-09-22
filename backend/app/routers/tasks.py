@@ -36,7 +36,24 @@ def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
 
     return task
 
+@router.delete("/{task_id}")
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
 
+    if not task:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
+
+    task_title = task.title
+
+    db.delete(task)
+    db.commit()
+
+    return {
+        "message": f"{task_title} has been deleted successfully."
+    }
 
 
 

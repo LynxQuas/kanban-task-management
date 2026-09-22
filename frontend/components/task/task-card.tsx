@@ -1,9 +1,20 @@
 "use client";
+
+import { deleteTask } from "@/libs/tasks";
 import { Task } from "@/libs/types/task";
-import { CalendarDays, Circle, Flag } from "lucide-react";
-import DropDownActions from "../ui/drop-down-actions";
-import TaskModal from "./task-modal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+    CalendarDays,
+    Circle,
+    Flag,
+    Trash2,
+    TriangleAlert,
+} from "lucide-react";
 import { useState } from "react";
+
+import DropDownActions from "../ui/drop-down-actions";
+import ModalLayout from "../modal-layout";
+import TaskModal from "./task-modal";
 
 type Priority = "Low" | "Medium" | "High";
 
@@ -18,14 +29,36 @@ type TaskCardProps = {
 };
 
 const TaskCard = ({ task }: TaskCardProps) => {
+    const queryClient = useQueryClient();
+
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const deleteTaskMutation = useMutation({
+        mutationFn: () => deleteTask(task.id),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["board"],
+            });
+
+            setIsDeleteModalOpen(false);
+        },
+    });
+
     const handleEditTask = () => {
         setIsTaskModalOpen(true);
     };
 
     const handleDeleteTask = () => {
-        console.log("Delete task", task.id);
+        setIsDeleteModalOpen(true);
     };
+
+    const handleConfirmDelete = () => {
+        deleteTaskMutation.mutate();
+    };
+
+    const { isPending } = deleteTaskMutation;
 
     return (
         <>
@@ -36,7 +69,56 @@ const TaskCard = ({ task }: TaskCardProps) => {
                 onClose={() => setIsTaskModalOpen(false)}
             />
 
-            <article className=" group rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-white/10 hover:bg-[#30313D] hover:shadow-lg ">
+            <ModalLayout
+                isOpen={isDeleteModalOpen}
+                onClose={() => {
+                    if (!isPending) {
+                        setIsDeleteModalOpen(false);
+                    }
+                }}
+            >
+                <div className="flex flex-col">
+                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-red-400/10">
+                        <TriangleAlert size={21} className="text-red-400" />
+                    </div>
+
+                    <h2 className="text-lg font-semibold text-white">
+                        Delete task?
+                    </h2>
+
+                    <p className="mt-2 text-sm leading-6 text-gray-400">
+                        Are you sure you want to delete{" "}
+                        <span className="font-medium text-gray-200">
+                            &quot;{task.title}&quot;
+                        </span>
+                        ? This action cannot be undone.
+                    </p>
+
+                    <div className="mt-6 flex justify-end gap-2">
+                        <button
+                            type="button"
+                            disabled={isPending}
+                            onClick={() => setIsDeleteModalOpen(false)}
+                            className="rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            disabled={isPending}
+                            onClick={handleConfirmDelete}
+                            className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            <Trash2 size={15} />
+
+                            {isPending ? "Deleting..." : "Delete task"}
+                        </button>
+                    </div>
+                </div>
+            </ModalLayout>
+
+            <article className="group rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-white/10 hover:bg-[#30313D] hover:shadow-lg">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-start gap-2">
                         <Circle
@@ -53,7 +135,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
                         handleEdit={handleEditTask}
                         handleDelete={handleDeleteTask}
                         label="task"
-                        className="shrink-0 rounded-md p-1 text-gray-600 opacity-0 transition hover:bg-white/5 hover:text-gray-300 group-hover:opacity-100 w-7 h-7"
+                        className="h-7 w-7 shrink-0 rounded-md p-1 text-gray-600 opacity-0 transition hover:bg-white/5 hover:text-gray-300 group-hover:opacity-100"
                     />
                 </div>
 
@@ -76,7 +158,6 @@ const TaskCard = ({ task }: TaskCardProps) => {
                     {task.due_date && (
                         <div className="ml-auto flex items-center gap-1.5 text-[11px] text-gray-500">
                             <CalendarDays size={12} />
-
                             <span>{task.due_date}</span>
                         </div>
                     )}
