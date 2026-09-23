@@ -47,7 +47,7 @@ const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
             queryClient.setQueryData(["board", updatedBoard.id], updatedBoard);
 
             queryClient.invalidateQueries({
-                queryKey: ["boards"],
+                queryKey: ["board"],
             });
 
             onClose();

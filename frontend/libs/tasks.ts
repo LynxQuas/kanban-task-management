@@ -34,7 +34,7 @@ export async function updateTask(
     taskData: CreateTaskForm,
 ): Promise<Task> {
     const response = await fetch(`${API_URL}/tasks/${taskId}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json",
         },

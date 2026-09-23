@@ -20,3 +20,9 @@ class TaskResponse(BaseModel):
     priority: str
     due_date: date
     column_id: int
+class TaskUpdate(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    priority: str | None = None
+    due_date: date | None = None
+    column_id: int | None = None

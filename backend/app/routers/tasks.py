@@ -6,7 +6,8 @@ from app.models.board import Board
 from app.models.column import Column
 from app.models.task import Task
 from app.schemas.board import BoardCreate, BoardResponse
-from app.schemas.task import TaskCreate, TaskResponse
+from app.schemas.task import TaskCreate, TaskResponse,  TaskUpdate
+
 
 router = APIRouter()
 
@@ -56,7 +57,39 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     }
 
 
+@router.patch("/{task_id}", response_model=TaskResponse)
+def update_task(
+    task_id: int,
+    task_data: TaskUpdate,
+    db: Session = Depends(get_db)
+):
+    task = db.query(Task).filter(Task.id == task_id).first()
 
+    if not task:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
 
+    if task_data.column_id is not None:
+        column = (
+            db.query(Column)
+            .filter(Column.id == task_data.column_id)
+            .first()
+        )
 
+        if not column:
+            raise HTTPException(
+                status_code=404,
+                detail="Column not found"
+            )
 
+    update_data = task_data.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(task, field, value)
+
+    db.commit()
+    db.refresh(task)
+
+    return task
