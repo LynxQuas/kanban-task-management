@@ -31,7 +31,7 @@ export async function createTask(taskData: CreateTaskForm): Promise<Task> {
 
 export async function updateTask(
     taskId: number,
-    taskData: CreateTaskForm,
+    taskData: Partial<CreateTaskForm>,
 ): Promise<Task> {
     const response = await fetch(`${API_URL}/tasks/${taskId}`, {
         method: "PATCH",

@@ -5,12 +5,13 @@ import { Task } from "@/libs/types/task";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     CalendarDays,
-    Circle,
     Flag,
+    GripVertical,
     Trash2,
     TriangleAlert,
 } from "lucide-react";
 import { useState } from "react";
+import { useDraggable } from "@dnd-kit/core";
 
 import DropDownActions from "../ui/drop-down-actions";
 import ModalLayout from "../modal-layout";
@@ -35,6 +36,11 @@ const TaskCard = ({ task, columns }: TaskCardProps) => {
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const { attributes, listeners, setNodeRef, transform, isDragging } =
+        useDraggable({
+            id: task.id,
+        });
 
     const deleteTaskMutation = useMutation({
         mutationFn: () => deleteTask(task.id),
@@ -120,13 +126,32 @@ const TaskCard = ({ task, columns }: TaskCardProps) => {
                 </div>
             </ModalLayout>
 
-            <article className="group rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-white/10 hover:bg-[#30313D] hover:shadow-lg">
+            <article
+                ref={setNodeRef}
+                style={{
+                    transform: transform
+                        ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+                        : undefined,
+                }}
+                className={`group rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm ${
+                    isDragging
+                        ? "z-50 shadow-xl"
+                        : "transition-all duration-200 hover:-translate-y-0.5 hover:border-white/10 hover:bg-[#30313D] hover:shadow-lg"
+                }`}
+            >
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-start gap-2">
-                        <Circle
-                            size={17}
-                            className="mt-0.5 shrink-0 text-gray-600 transition group-hover:text-indigo-400"
-                        />
+                        <button
+                            type="button"
+                            {...listeners}
+                            {...attributes}
+                            aria-label="Drag task"
+                            className={`mt-0.5 shrink-0 text-gray-600 transition group-hover:text-indigo-400 cursor-grab ${
+                                isDragging ? "cursor-grabbing" : ""
+                            }`}
+                        >
+                            <GripVertical size={20} />
+                        </button>
 
                         <h3 className="text-sm font-medium leading-5 text-gray-100">
                             {task.title}
