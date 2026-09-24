@@ -31,7 +31,7 @@ const BoardDetailHeader = ({
 
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["board"],
+                queryKey: ["boards"],
             });
 
             setIsDeleteModalOpen(false);
