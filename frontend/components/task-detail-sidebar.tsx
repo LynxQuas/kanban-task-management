@@ -214,7 +214,7 @@ const TaskDetailSidebar = ({ board_id, task_id }: TaskDetailSidebarProps) => {
 
             <aside
                 ref={sidebarRef}
-                className="fixed inset-y-0 right-0 z-50 flex w-full md:w-110 animate-[slideIn_220ms_cubic-bezier(0.16,1,0.3,1)] flex-col border-l border-white/8 bg-[#20212C] shadow-[-24px_0_70px_rgba(0,0,0,0.35)]"
+                className="fixed inset-y-0 right-0 z-20 flex w-full md:w-110 animate-[slideIn_220ms_cubic-bezier(0.16,1,0.3,1)] flex-col border-l border-white/8 bg-[#20212C] shadow-[-24px_0_70px_rgba(0,0,0,0.35)]"
             >
                 <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/6 px-5">
                     <div className="flex items-center gap-2">
