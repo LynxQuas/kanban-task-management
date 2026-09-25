@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import { Column } from "@/libs/types/board";
+import { Board, Column } from "@/libs/types/board";
 import { Task } from "@/libs/types/task";
 import Tasks from "../task/task";
 
@@ -8,9 +8,15 @@ type ColumnHeaderProps = {
     taskCount: number;
     tasks: Task[];
     columns: Column[];
+    board: Board;
 };
 
-const ColumnHeader = ({ column, taskCount, columns }: ColumnHeaderProps) => {
+const ColumnHeader = ({
+    column,
+    taskCount,
+    columns,
+    board,
+}: ColumnHeaderProps) => {
     const { setNodeRef, isOver } = useDroppable({
         id: column.id,
     });
@@ -39,7 +45,7 @@ const ColumnHeader = ({ column, taskCount, columns }: ColumnHeaderProps) => {
                         : "border-white/5 bg-[#252631]"
                 }`}
             >
-                <Tasks tasks={column.tasks} columns={columns} />
+                <Tasks tasks={column.tasks} columns={columns} board={board} />
             </div>
         </div>
     );

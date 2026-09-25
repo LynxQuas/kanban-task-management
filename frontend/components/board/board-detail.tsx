@@ -7,7 +7,7 @@ import ErrorUi from "../ui/error-ui";
 import Columns from "../column/columns";
 
 import { updateTask } from "@/libs/tasks";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     DndContext,
     PointerSensor,
@@ -24,6 +24,31 @@ type BoardDetailProps = {
 const BoardDetail = ({ board_id }: BoardDetailProps) => {
     const { data: board, isLoading, isError } = useBoard(board_id);
 
+    const queryClient = useQueryClient();
+
+    const updateTaskMutation = useMutation({
+        mutationFn: ({
+            taskId,
+            columnId,
+        }: {
+            taskId: number;
+            columnId: number;
+        }) =>
+            updateTask(taskId, {
+                column_id: columnId,
+            }),
+
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["board", board_id],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["task", variables.taskId],
+            });
+        },
+    });
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -38,21 +63,14 @@ const BoardDetail = ({ board_id }: BoardDetailProps) => {
         }),
     );
 
-    const queryClient = useQueryClient();
-
-    const handleDragEnd = async (event: DragEndEvent) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        if (!over) return;
+        if (!over || active.id === over.id) return;
 
-        if (active.id === over.id) return;
-
-        await updateTask(Number(active.id), {
-            column_id: Number(over.id),
-        });
-
-        queryClient.invalidateQueries({
-            queryKey: ["board", board_id],
+        updateTaskMutation.mutate({
+            taskId: Number(active.id),
+            columnId: Number(over.id),
         });
     };
 

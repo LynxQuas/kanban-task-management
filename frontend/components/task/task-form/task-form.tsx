@@ -62,6 +62,9 @@ const TaskForm = ({ onClose, columns, task }: TaskFormProps) => {
             queryClient.invalidateQueries({
                 queryKey: ["board"],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["task"],
+            });
 
             reset();
             onClose();

@@ -17,6 +17,7 @@ import DropDownActions from "../ui/drop-down-actions";
 import ModalLayout from "../modal-layout";
 import TaskModal from "./task-modal";
 import { Column } from "@/libs/types/board";
+import { useRouter } from "next/navigation";
 
 type Priority = "Low" | "Medium" | "High";
 
@@ -29,10 +30,12 @@ const priorityStyles: Record<Priority, string> = {
 type TaskCardProps = {
     task: Task;
     columns: Column[];
+    board_id: number;
 };
 
-const TaskCard = ({ task, columns }: TaskCardProps) => {
+const TaskCard = ({ task, columns, board_id }: TaskCardProps) => {
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -53,6 +56,18 @@ const TaskCard = ({ task, columns }: TaskCardProps) => {
             setIsDeleteModalOpen(false);
         },
     });
+
+    const handleTaskClick = () => {
+        const currentPath = window.location.pathname;
+
+        const isTaskDetailOpen = currentPath.includes("/tasks/");
+
+        if (isTaskDetailOpen) {
+            router.replace(`/boards/${board_id}/tasks/${task.id}`);
+        } else {
+            router.push(`/boards/${board_id}/tasks/${task.id}`);
+        }
+    };
 
     const handleEditTask = () => {
         setIsTaskModalOpen(true);
@@ -128,12 +143,13 @@ const TaskCard = ({ task, columns }: TaskCardProps) => {
 
             <article
                 ref={setNodeRef}
+                onClick={handleTaskClick}
                 style={{
                     transform: transform
                         ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
                         : undefined,
                 }}
-                className={`group rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm ${
+                className={`group cursor-pointer rounded-xl border border-white/5 bg-[#2B2C37] p-4 shadow-sm ${
                     isDragging
                         ? "z-50 shadow-xl"
                         : "transition-all duration-200 hover:-translate-y-0.5 hover:border-white/10 hover:bg-[#30313D] hover:shadow-lg"
@@ -145,6 +161,7 @@ const TaskCard = ({ task, columns }: TaskCardProps) => {
                             type="button"
                             {...listeners}
                             {...attributes}
+                            onClick={(event) => event.stopPropagation()}
                             aria-label="Drag task"
                             className={`mt-0.5 shrink-0 text-gray-600 transition group-hover:text-indigo-400 cursor-grab ${
                                 isDragging ? "cursor-grabbing" : ""
@@ -158,12 +175,14 @@ const TaskCard = ({ task, columns }: TaskCardProps) => {
                         </h3>
                     </div>
 
-                    <DropDownActions
-                        handleEdit={handleEditTask}
-                        handleDelete={handleDeleteTask}
-                        label="task"
-                        className="h-7 w-7 shrink-0 rounded-md p-1 text-gray-600 opacity-0 transition hover:bg-white/5 hover:text-gray-300 group-hover:opacity-100"
-                    />
+                    <div onClick={(event) => event.stopPropagation()}>
+                        <DropDownActions
+                            handleEdit={handleEditTask}
+                            handleDelete={handleDeleteTask}
+                            label="task"
+                            className="h-7 w-7 shrink-0 rounded-md p-1 text-gray-600 opacity-0 transition hover:bg-white/5 hover:text-gray-300 group-hover:opacity-100"
+                        />
+                    </div>
                 </div>
 
                 {task.description && (

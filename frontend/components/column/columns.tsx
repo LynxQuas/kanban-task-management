@@ -14,6 +14,7 @@ const Columns = ({ board }: ColumnsProps) => {
 
                     return (
                         <ColumnHeader
+                            board={board}
                             key={column.id}
                             column={column}
                             taskCount={taskCount}
