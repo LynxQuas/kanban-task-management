@@ -20,6 +20,7 @@ import { deleteTask } from "@/libs/tasks";
 import DropDownActions from "./ui/drop-down-actions";
 import ModalLayout from "./modal-layout";
 import TaskModal from "./task/task-modal";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 
 type TaskDetailSidebarProps = {
     board_id: string;
@@ -102,6 +103,8 @@ const TaskDetailSidebar = ({ board_id, task_id }: TaskDetailSidebarProps) => {
             handleClose();
         }
     });
+
+    useEscapeKey(handleClose);
 
     const isLoading = isTaskLoading || isBoardLoading;
     const isError = isTaskError || isBoardError;
