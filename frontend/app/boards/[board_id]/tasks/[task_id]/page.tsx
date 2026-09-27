@@ -1,4 +1,4 @@
-import TaskDetailSidebar from "@/components/task-detail-sidebar";
+import TaskDetailSidebar from "@/components/task/task-detail-sidebar";
 
 type TaskPageProps = {
     params: Promise<{

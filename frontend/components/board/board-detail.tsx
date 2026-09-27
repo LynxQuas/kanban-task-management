@@ -5,17 +5,8 @@ import BoardDetailHeader from "./board-detail-header";
 import LoadingSpinner from "../ui/loading-spinner";
 import ErrorUi from "../ui/error-ui";
 import Columns from "../column/columns";
-
-import { updateTask } from "@/libs/tasks";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-    DndContext,
-    PointerSensor,
-    TouchSensor,
-    useSensor,
-    useSensors,
-    type DragEndEvent,
-} from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
+import useBoardDragAndDrop from "@/hooks/tasks/useBoardDragAndDrop";
 
 type BoardDetailProps = {
     board_id: string;
@@ -23,56 +14,7 @@ type BoardDetailProps = {
 
 const BoardDetail = ({ board_id }: BoardDetailProps) => {
     const { data: board, isLoading, isError } = useBoard(board_id);
-
-    const queryClient = useQueryClient();
-
-    const updateTaskMutation = useMutation({
-        mutationFn: ({
-            taskId,
-            columnId,
-        }: {
-            taskId: number;
-            columnId: number;
-        }) =>
-            updateTask(taskId, {
-                column_id: columnId,
-            }),
-
-        onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({
-                queryKey: ["board", board_id],
-            });
-
-            queryClient.invalidateQueries({
-                queryKey: ["task", variables.taskId],
-            });
-        },
-    });
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: {
-                distance: 8,
-            },
-        }),
-        useSensor(TouchSensor, {
-            activationConstraint: {
-                delay: 200,
-                tolerance: 5,
-            },
-        }),
-    );
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-
-        if (!over || active.id === over.id) return;
-
-        updateTaskMutation.mutate({
-            taskId: Number(active.id),
-            columnId: Number(over.id),
-        });
-    };
+    const { sensors, handleDragEnd } = useBoardDragAndDrop(board_id);
 
     if (isLoading) {
         return (
