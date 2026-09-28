@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import boards, tasks
+from app.routers import boards, tasks, auth
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -16,3 +16,5 @@ app.add_middleware(
 
 app.include_router(boards.router, prefix="/boards")
 app.include_router(tasks.router, prefix="/tasks")
+app.include_router(auth.router, prefix="/auth")
+

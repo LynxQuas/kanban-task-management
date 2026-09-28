@@ -6,7 +6,9 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.base import Base
-from app.models import board, column, task
+
+from app.models import board, column, task, user
+
 
 from app.config import settings
 
