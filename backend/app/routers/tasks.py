@@ -7,17 +7,24 @@ from app.models.column import Column
 from app.models.task import Task
 from app.schemas.board import BoardCreate, BoardResponse
 from app.schemas.task import TaskCreate, TaskResponse,  TaskUpdate
+from app.models.user import User
+from app.core.security import get_current_user
 
 
 router = APIRouter()
 
 @router.get("/", response_model=list[TaskResponse])
-def get_tasks(db: Session = Depends(get_db)):
+def get_tasks(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     tasks = db.query(Task).all()
     return tasks
 
 @router.post("/", response_model=TaskResponse)
-def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
+def create_task(
+    task_data: TaskCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     column = db.query(Column).filter(Column.id == task_data.column_id).first()
 
     if not column:
@@ -38,7 +45,10 @@ def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
     return task
 
 @router.delete("/{task_id}")
-def delete_task(task_id: int, db: Session = Depends(get_db)):
+def delete_task(
+    task_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     task = db.query(Task).filter(Task.id == task_id).first()
 
     if not task:
@@ -57,7 +67,10 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     }
 
 @router.get("/{task_id}", response_model=TaskResponse)
-def get_task(task_id: int, db: Session = Depends(get_db)):
+def get_task(
+    task_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     task = db.query(Task).filter(Task.id == task_id).first()
 
     if not task:
@@ -73,7 +86,8 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
 def update_task(
     task_id: int,
     task_data: TaskUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     task = db.query(Task).filter(Task.id == task_id).first()
 

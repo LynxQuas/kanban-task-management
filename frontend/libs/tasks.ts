@@ -16,6 +16,7 @@ export async function getTasks() {
 export async function createTask(taskData: CreateTaskForm): Promise<Task> {
     const response = await fetch(`${API_URL}/tasks`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -35,6 +36,7 @@ export async function updateTask(
 ): Promise<Task> {
     const response = await fetch(`${API_URL}/tasks/${taskId}`, {
         method: "PATCH",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -51,6 +53,7 @@ export async function updateTask(
 export async function deleteTask(taskId: number): Promise<void> {
     const response = await fetch(`${API_URL}/tasks/${taskId}`, {
         method: "DELETE",
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -59,7 +62,9 @@ export async function deleteTask(taskId: number): Promise<void> {
 }
 
 export const getTask = async (task_id: number): Promise<Task> => {
-    const response = await fetch(`http://localhost:8000/tasks/${task_id}`);
+    const response = await fetch(`http://localhost:8000/tasks/${task_id}`, {
+        credentials: "include",
+    });
 
     if (!response.ok) {
         throw new Error("Failed to fetch task");

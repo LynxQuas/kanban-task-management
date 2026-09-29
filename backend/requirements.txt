@@ -5,3 +5,5 @@ psycopg[binary]
 alembic
 pydantic-settings
 pwdlib[argon2]
+python-jose[cryptography]
+passlib[bcrypt]

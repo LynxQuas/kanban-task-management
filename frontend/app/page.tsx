@@ -2,23 +2,18 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const loginSchema = z.object({
-    email: z
-        .string()
-        .trim()
-        .email("Please enter a valid email address."),
-
-    password: z
-        .string()
-        .min(1, "Password is required."),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
+import { LoginForm, loginSchema } from "@/libs/schemas/auth";
+import { login } from "@/libs/auth";
+import { useAuthRedirect } from "@/hooks/auth/useAuthRedirect";
 
 const LoginPage = () => {
+    const router = useRouter();
+
+    useAuthRedirect();
+
     const {
         register,
         handleSubmit,
@@ -27,11 +22,13 @@ const LoginPage = () => {
         resolver: zodResolver(loginSchema),
     });
 
-    const loginHandler = (data: LoginForm) => {
-        console.log(data);
-
-        // Later:
-        // loginMutation(data);
+    const loginHandler = async (data: LoginForm) => {
+        try {
+            await login(data);
+            router.replace("/boards");
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const loginWithGoogle = () => {
@@ -51,8 +48,7 @@ const LoginPage = () => {
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="mb-8 flex flex-col items-center">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/15">
-                    </div>
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/15"></div>
 
                     <h1 className="text-2xl font-bold tracking-tight text-white">
                         kanban
@@ -82,9 +78,7 @@ const LoginPage = () => {
                             onClick={loginWithGoogle}
                             className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#20212C] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
                         >
-                            <span className="text-base font-semibold">
-                                G
-                            </span>
+                            <span className="text-base font-semibold">G</span>
 
                             <span>Google</span>
                         </button>
@@ -94,7 +88,6 @@ const LoginPage = () => {
                             onClick={loginWithGithub}
                             className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#20212C] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
                         >
-
                             <span>GitHub</span>
                         </button>
                     </div>
@@ -186,7 +179,7 @@ const LoginPage = () => {
                     {/* Sign up */}
                     <div className="mt-6 border-t border-white/10 pt-6 text-center">
                         <p className="text-sm text-gray-500">
-                            Don't have an account?{" "}
+                            Don&apos;t have an account?{" "}
                             <Link
                                 href="/signup"
                                 className="font-medium text-indigo-400 transition hover:text-indigo-300"
@@ -202,4 +195,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

@@ -5,16 +5,21 @@ from app.database import get_db
 from app.models.board import Board
 from app.models.column import Column
 from app.schemas.board import BoardCreate, BoardResponse, BoardUpdate
-
+from app.models.user import User
+from app.core.security import get_current_user
 router = APIRouter()
 
 @router.get("/", response_model=list[BoardResponse])
-def get_boards(db: Session = Depends(get_db)):
+def get_boards(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     boards = db.query(Board).all()
     return boards
 
 @router.delete("/{board_id}")
-def delete_board(board_id: int, db: Session = Depends(get_db)):
+def delete_board(
+    board_id: int, db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     board = db.query(Board).filter(Board.id == board_id).first()
 
     if not board:
@@ -26,7 +31,10 @@ def delete_board(board_id: int, db: Session = Depends(get_db)):
     return {"message": "Board deleted successfully"}
 
 @router.get("/{board_id}", response_model=BoardResponse)
-def get_board(board_id: int, db: Session = Depends(get_db)):
+def get_board(
+    board_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)):
     board = db.query(Board).filter(Board.id == board_id).first()
 
     if not board:
@@ -36,7 +44,10 @@ def get_board(board_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/")
-def create_board( board_data: BoardCreate, db: Session = Depends(get_db)):
+def create_board( 
+    board_data: BoardCreate, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)):
     board = Board(name=board_data.name)
 
     db.add(board)
@@ -61,6 +72,7 @@ def update_board(
     board_id: int,
     board_data: BoardUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     board = db.query(Board).filter(Board.id == board_id).first()
 

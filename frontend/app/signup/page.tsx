@@ -1,40 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import {  LayoutDashboard } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const signupSchema = z
-    .object({
-        name: z
-            .string()
-            .trim()
-            .min(1, "Name is required."),
-
-        email: z
-            .string()
-            .trim()
-            .email("Please enter a valid email address."),
-
-        password: z
-            .string()
-            .min(8, "Password must be at least 8 characters."),
-
-        confirmPassword: z
-            .string()
-            .min(1, "Please confirm your password."),
-    })
-    .refine(
-        (data) => data.password === data.confirmPassword,
-        {
-            message: "Passwords do not match.",
-            path: ["confirmPassword"],
-        }
-    );
-
-type SignupForm = z.infer<typeof signupSchema>;
+import { useMutation } from "@tanstack/react-query";
+import { SignupForm, signupSchema } from "@/libs/schemas/auth";
+import { signup } from "@/libs/auth";
+import { useAuthRedirect } from "@/hooks/auth/useAuthRedirect";
 
 const SignupPage = () => {
     const {
@@ -45,11 +18,17 @@ const SignupPage = () => {
         resolver: zodResolver(signupSchema),
     });
 
-    const signupHandler = (data: SignupForm) => {
-        console.log(data);
+    useAuthRedirect();
 
-        // Later:
-        // signupMutation(data);
+    const {
+        mutate: signupMutation,
+        isPending,
+        isError,
+        error,
+        isSuccess,
+    } = useMutation({ mutationFn: signup });
+    const signupHandler = (data: SignupForm) => {
+        signupMutation(data);
     };
 
     const signupWithGoogle = () => {
@@ -106,9 +85,7 @@ const SignupPage = () => {
                             onClick={signupWithGoogle}
                             className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#20212C] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
                         >
-                            <span className="text-base font-semibold">
-                                G
-                            </span>
+                            <span className="text-base font-semibold">G</span>
 
                             <span>Google</span>
                         </button>
@@ -119,7 +96,6 @@ const SignupPage = () => {
                             onClick={signupWithGithub}
                             className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#20212C] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
                         >
-
                             <span>GitHub</span>
                         </button>
                     </div>
@@ -268,4 +244,3 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-

@@ -3,10 +3,14 @@ import { Board, CreateBoardInput } from "./types/board";
 const API_URL = "http://localhost:8000";
 
 export async function getBoards() {
-    const response = await fetch(`${API_URL}/boards/`);
+    const response = await fetch(`${API_URL}/boards/`, {
+        credentials: "include",
+    });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch boards");
+        const data = await response.json();
+
+        throw new Error(data.detail || "Failed to fetch boards");
     }
 
     return response.json();
@@ -15,6 +19,7 @@ export async function getBoards() {
 export async function createBoard(boardData: CreateBoardInput): Promise<Board> {
     const response = await fetch(`${API_URL}/boards`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -22,17 +27,23 @@ export async function createBoard(boardData: CreateBoardInput): Promise<Board> {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to create board");
+        const data = await response.json();
+
+        throw new Error(data.detail || "Failed to create board.");
     }
 
     return response.json();
 }
 
 export async function getBoard(boardId: string): Promise<Board> {
-    const response = await fetch(`${API_URL}/boards/${boardId}`);
+    const response = await fetch(`${API_URL}/boards/${boardId}`, {
+        credentials: "include",
+    });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch board");
+        const data = await response.json();
+
+        throw new Error(data.detail || "Failed to get board.");
     }
 
     return response.json();
@@ -47,6 +58,7 @@ export async function updateBoard({
 }): Promise<Board> {
     const response = await fetch(`${API_URL}/boards/${boardId}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -54,7 +66,9 @@ export async function updateBoard({
     });
 
     if (!response.ok) {
-        throw new Error("Failed to update board");
+        const data = await response.json();
+
+        throw new Error(data.detail || "Failed to update board.");
     }
 
     return response.json();
@@ -63,9 +77,12 @@ export async function updateBoard({
 export async function deleteBoard(board_id: number): Promise<void> {
     const response = await fetch(`${API_URL}/boards/${board_id}`, {
         method: "DELETE",
+        credentials: "include",
     });
 
     if (!response.ok) {
-        throw new Error("Failed to delete board");
+        const data = await response.json();
+
+        throw new Error(data.detail || "Failed to delete board.");
     }
 }
