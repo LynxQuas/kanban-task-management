@@ -41,17 +41,15 @@ const DesktopNavbar = ({
                 }`}
             >
                 <div className="flex h-full w-72 flex-col">
-                    {/* Header */}
                     <div className="flex h-22.25 shrink-0 items-center border-b border-white/10 px-6">
                         <Link
-                            href="/board"
+                            href="/boards"
                             className="text-2xl font-bold tracking-tight text-indigo-500 transition hover:text-indigo-400"
                         >
                             kanban
                         </Link>
                     </div>
 
-                    {/* Boards */}
                     <div className="flex-1 overflow-y-auto py-6">
                         <div className="mb-4 flex items-center justify-between px-6">
                             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500">
@@ -82,7 +80,6 @@ const DesktopNavbar = ({
                         </div>
                     </div>
 
-                    {/* User Profile */}
                     <div className="shrink-0 border-t border-white/10 p-4">
                         <UserProfile
                             user={user}
@@ -93,7 +90,6 @@ const DesktopNavbar = ({
                 </div>
             </aside>
 
-            {/* Collapse Button */}
             <button
                 type="button"
                 onClick={() => setIsNavOpen((prev) => !prev)}

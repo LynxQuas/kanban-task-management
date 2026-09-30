@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,42 +12,36 @@ import { useAuthRedirect } from "@/hooks/auth/useAuthRedirect";
 
 const LoginPage = () => {
     const router = useRouter();
+    const [serverError, setServerError] = useState("");
 
     useAuthRedirect();
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<LoginForm>({
         resolver: zodResolver(loginSchema),
     });
 
     const loginHandler = async (data: LoginForm) => {
+        setServerError("");
+
         try {
             await login(data);
             router.replace("/boards");
         } catch (error) {
-            console.error(error);
+            if (error instanceof Error) {
+                setServerError(error.message);
+            } else {
+                setServerError("Something went wrong. Please try again.");
+            }
         }
-    };
-
-    const loginWithGoogle = () => {
-        // Later:
-        // window.location.href =
-        //     "http://localhost:8000/auth/google";
-    };
-
-    const loginWithGithub = () => {
-        // Later:
-        // window.location.href =
-        //     "http://localhost:8000/auth/github";
     };
 
     return (
         <main className="flex min-h-screen items-center justify-center bg-[#20212C] px-4">
             <div className="w-full max-w-md">
-                {/* Logo */}
                 <div className="mb-8 flex flex-col items-center">
                     <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/15"></div>
 
@@ -59,7 +54,6 @@ const LoginPage = () => {
                     </p>
                 </div>
 
-                {/* Card */}
                 <div className="rounded-2xl border border-white/10 bg-[#2B2C37] p-6 shadow-2xl shadow-black/20 sm:p-8">
                     <div className="mb-6">
                         <h2 className="text-xl font-semibold text-white">
@@ -71,44 +65,20 @@ const LoginPage = () => {
                         </p>
                     </div>
 
-                    {/* OAuth */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <button
-                            type="button"
-                            onClick={loginWithGoogle}
-                            className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#20212C] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
+                    {/* Backend error */}
+                    {serverError && (
+                        <div
+                            role="alert"
+                            className="mb-5 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"
                         >
-                            <span className="text-base font-semibold">G</span>
+                            {serverError}
+                        </div>
+                    )}
 
-                            <span>Google</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={loginWithGithub}
-                            className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#20212C] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
-                        >
-                            <span>GitHub</span>
-                        </button>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="my-6 flex items-center gap-3">
-                        <div className="h-px flex-1 bg-white/10" />
-
-                        <span className="text-xs text-gray-600">
-                            OR CONTINUE WITH EMAIL
-                        </span>
-
-                        <div className="h-px flex-1 bg-white/10" />
-                    </div>
-
-                    {/* Email login */}
                     <form
                         onSubmit={handleSubmit(loginHandler)}
                         className="space-y-5"
                     >
-                        {/* Email */}
                         <div>
                             <label
                                 htmlFor="email"
@@ -133,7 +103,6 @@ const LoginPage = () => {
                             )}
                         </div>
 
-                        {/* Password */}
                         <div>
                             <div className="mb-2 flex items-center justify-between">
                                 <label
@@ -170,9 +139,10 @@ const LoginPage = () => {
                         {/* Submit */}
                         <button
                             type="submit"
-                            className="w-full rounded-lg bg-indigo-600 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/10 transition hover:bg-indigo-500 active:scale-[0.99]"
+                            disabled={isSubmitting}
+                            className="w-full rounded-lg bg-indigo-600 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/10 transition hover:bg-indigo-500 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            Sign in
+                            {isSubmitting ? "Signing in..." : "Sign in"}
                         </button>
                     </form>
 

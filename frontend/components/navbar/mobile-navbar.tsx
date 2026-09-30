@@ -44,7 +44,6 @@ const MobileNavbar = ({
 
     return (
         <>
-            {/* Mobile Header */}
             <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-[#2B2C37] px-4 md:hidden">
                 <Link
                     href="/board"
@@ -63,10 +62,8 @@ const MobileNavbar = ({
                 </button>
             </header>
 
-            {/* Mobile Drawer */}
             {isOpen && (
                 <div className="fixed inset-0 z-60 md:hidden">
-                    {/* Overlay */}
                     <button
                         type="button"
                         aria-label="Close navigation"
@@ -74,12 +71,10 @@ const MobileNavbar = ({
                         className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
                     />
 
-                    {/* Drawer */}
                     <aside className="absolute left-0 top-0 flex h-full w-72.5 flex-col border-r border-white/10 bg-[#2B2C37] shadow-2xl">
-                        {/* Drawer Header */}
                         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-5">
                             <Link
-                                href="/board"
+                                href="/boards"
                                 onClick={close}
                                 className="text-xl font-bold tracking-tight text-indigo-500"
                             >
@@ -96,7 +91,6 @@ const MobileNavbar = ({
                             </button>
                         </div>
 
-                        {/* Boards */}
                         <div className="flex-1 overflow-y-auto py-6">
                             <div className="mb-4 flex items-center justify-between px-5">
                                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500">
@@ -116,7 +110,6 @@ const MobileNavbar = ({
                                 onBoardClick={close}
                             />
 
-                            {/* Create Board */}
                             <div className="px-5 pt-5">
                                 <button
                                     type="button"
@@ -129,7 +122,6 @@ const MobileNavbar = ({
                             </div>
                         </div>
 
-                        {/* User Profile */}
                         <div className="shrink-0 border-t border-white/10 p-4">
                             <UserProfile
                                 user={user}
