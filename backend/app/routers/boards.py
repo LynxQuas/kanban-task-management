@@ -12,15 +12,21 @@ router = APIRouter()
 @router.get("/", response_model=list[BoardResponse])
 def get_boards(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)):
-    boards = db.query(Board).all()
+    current_user: User = Depends(get_current_user),
+):
+    boards = (
+        db.query(Board)
+        .filter(Board.user_id == current_user.id)
+        .all()
+    )
+
     return boards
 
 @router.delete("/{board_id}")
 def delete_board(
     board_id: int, db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)):
-    board = db.query(Board).filter(Board.id == board_id).first()
+    board = db.query(Board).filter(Board.id == board_id, Board.user_id == current_user.id).first()
 
     if not board:
         raise HTTPException(status_code=404, detail="Board not found")
@@ -35,7 +41,7 @@ def get_board(
     board_id: int, 
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)):
-    board = db.query(Board).filter(Board.id == board_id).first()
+    board = db.query(Board).filter(Board.id == board_id, Board.user_id == current_user.id).first()
 
     if not board:
         raise HTTPException( status_code=404, detail="Board not found")
@@ -48,7 +54,11 @@ def create_board(
     board_data: BoardCreate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user)):
-    board = Board(name=board_data.name)
+
+    board = Board(
+    name=board_data.name,
+    user_id=current_user.id,
+)
 
     db.add(board)
     db.flush()
@@ -74,7 +84,7 @@ def update_board(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    board = db.query(Board).filter(Board.id == board_id).first()
+    board = db.query(Board).filter(Board.id == board_id, Board.user_id == current_user.id).first()
 
     if not board:
         raise HTTPException(

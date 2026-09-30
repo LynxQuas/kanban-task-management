@@ -1,7 +1,11 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.base import Base
+
+if TYPE_CHECKING:
+    from app.models.board import Board
 
 
 class User(Base):
@@ -11,3 +15,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    boards: Mapped[list["Board"]] = relationship(
+    back_populates="owner"
+)

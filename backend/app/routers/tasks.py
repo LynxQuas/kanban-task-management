@@ -16,27 +16,47 @@ router = APIRouter()
 @router.get("/", response_model=list[TaskResponse])
 def get_tasks(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)):
-    tasks = db.query(Task).all()
+    current_user: User = Depends(get_current_user),
+):
+    tasks = (
+        db.query(Task)
+        .join(Column)
+        .join(Board)
+        .filter(Board.user_id == current_user.id)
+        .all()
+    )
+
     return tasks
 
 @router.post("/", response_model=TaskResponse)
 def create_task(
-    task_data: TaskCreate, 
+    task_data: TaskCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)):
-    column = db.query(Column).filter(Column.id == task_data.column_id).first()
+    current_user: User = Depends(get_current_user),
+):
+    column = (
+        db.query(Column)
+        .join(Board)
+        .filter(
+            Column.id == task_data.column_id,
+            Board.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not column:
-        raise HTTPException(status_code=404, detail="column not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Column not found",
+        )
 
     task = Task(
-        title = task_data.title,
-        description = task_data.description,
-        priority = task_data.priority,
-        due_date = task_data.due_date,
-        column_id = task_data.column_id
-        )
+        title=task_data.title,
+        description=task_data.description,
+        priority=task_data.priority,
+        due_date=task_data.due_date,
+        column_id=task_data.column_id,
+    )
 
     db.add(task)
     db.commit()
@@ -49,7 +69,16 @@ def delete_task(
     task_id: int, 
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)):
-    task = db.query(Task).filter(Task.id == task_id).first()
+    task = (
+        db.query(Task)
+        .join(Column)
+        .join(Board)
+        .filter(
+            Task.id == task_id,
+            Board.user_id == current_user.id,
+        )
+        .first()
+    )    
 
     if not task:
         raise HTTPException(
@@ -71,7 +100,16 @@ def get_task(
     task_id: int, 
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)):
-    task = db.query(Task).filter(Task.id == task_id).first()
+    task = (
+        db.query(Task)
+        .join(Column)
+        .join(Board)
+        .filter(
+            Task.id == task_id,
+            Board.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not task:
         raise HTTPException(
@@ -89,7 +127,16 @@ def update_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    task = db.query(Task).filter(Task.id == task_id).first()
+    task = (
+        db.query(Task)
+        .join(Column)
+        .join(Board)
+        .filter(
+            Task.id == task_id,
+            Board.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not task:
         raise HTTPException(
