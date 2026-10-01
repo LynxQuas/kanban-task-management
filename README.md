@@ -42,12 +42,6 @@ I built this project to get more hands-on experience with full-stack development
 * JWT
 * Password hashing
 
-### Tools
-
-* Docker
-* Git
-* VS Code
-
 ## How it works
 
 The basic structure is:
