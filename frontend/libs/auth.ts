@@ -1,6 +1,6 @@
 import { LoginForm, SignupForm } from "./schemas/auth";
 
-const API_URL = "http://localhost:8000/auth";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
 
 type SignupResponse = {
     message: string;

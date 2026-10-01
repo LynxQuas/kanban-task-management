@@ -8,8 +8,10 @@ type CurrentUser = {
     email: string;
 };
 
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
+
 async function getCurrentUser(): Promise<CurrentUser> {
-    const response = await fetch("http://localhost:8000/auth/me", {
+    const response = await fetch(`${API_URL}/me`, {
         credentials: "include",
     });
 

@@ -1,9 +1,9 @@
 import { Board, CreateBoardInput } from "./types/board";
 
-const API_URL = "http://localhost:8000";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/boards`;
 
 export async function getBoards() {
-    const response = await fetch(`${API_URL}/boards/`, {
+    const response = await fetch(`${API_URL}`, {
         credentials: "include",
     });
 
@@ -17,7 +17,7 @@ export async function getBoards() {
 }
 
 export async function createBoard(boardData: CreateBoardInput): Promise<Board> {
-    const response = await fetch(`${API_URL}/boards`, {
+    const response = await fetch(`${API_URL}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -36,7 +36,7 @@ export async function createBoard(boardData: CreateBoardInput): Promise<Board> {
 }
 
 export async function getBoard(boardId: string): Promise<Board> {
-    const response = await fetch(`${API_URL}/boards/${boardId}`, {
+    const response = await fetch(`${API_URL}/${boardId}`, {
         credentials: "include",
     });
 
@@ -56,7 +56,7 @@ export async function updateBoard({
     boardId: number;
     data: CreateBoardInput;
 }): Promise<Board> {
-    const response = await fetch(`${API_URL}/boards/${boardId}`, {
+    const response = await fetch(`${API_URL}/${boardId}`, {
         method: "PUT",
         credentials: "include",
         headers: {
@@ -75,7 +75,7 @@ export async function updateBoard({
 }
 
 export async function deleteBoard(board_id: number): Promise<void> {
-    const response = await fetch(`${API_URL}/boards/${board_id}`, {
+    const response = await fetch(`${API_URL}/${board_id}`, {
         method: "DELETE",
         credentials: "include",
     });

@@ -7,10 +7,12 @@ type BoardLayoutProps = {
     children: React.ReactNode;
 };
 
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
+
 const BoardLayout = async ({ children }: BoardLayoutProps) => {
     const cookieStore = await cookies();
 
-    const response = await fetch("http://localhost:8000/auth/me", {
+    const response = await fetch(`${API_URL}/me`, {
         headers: {
             Cookie: cookieStore.toString(),
         },
