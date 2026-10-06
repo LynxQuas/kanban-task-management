@@ -27,7 +27,7 @@ const useBoardDragAndDrop = (boardId: string) => {
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        if (!over || active.id === over.id) return;
+        if (!over) return;
 
         moveTask.mutate({
             taskId: Number(active.id),

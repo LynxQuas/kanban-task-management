@@ -11,6 +11,9 @@ from app.core.security import (
 )
 from app.models.user import User
 
+import os
+COOKIE_SECURE = os.getenv("COOKIE_SECURE", "false").lower() == "true"
+
 router = APIRouter()
 
 
@@ -82,7 +85,7 @@ def login(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,
+        secure=False,
         samesite="lax",
         max_age=60 * 30,
     )
@@ -106,7 +109,7 @@ def logout(response: Response):
     response.delete_cookie(
         key="access_token",
         httponly=True,
-        secure=True,
+        secure=False,
         samesite="lax",
     )
 

@@ -46,7 +46,7 @@ const MobileNavbar = ({
         <>
             <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-[#2B2C37] px-4 md:hidden">
                 <Link
-                    href="/board"
+                    href="/boards"
                     className="text-xl font-bold tracking-tight text-indigo-500"
                 >
                     kanban
