@@ -17,7 +17,7 @@ export async function getBoards() {
 }
 
 export async function createBoard(boardData: CreateBoardInput): Promise<Board> {
-    const response = await fetch(`${API_URL}`, {
+    const response = await fetch(`${API_URL}/`, {
         method: "POST",
         credentials: "include",
         headers: {
