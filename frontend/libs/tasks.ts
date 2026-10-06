@@ -14,7 +14,7 @@ export async function getTasks() {
 }
 
 export async function createTask(taskData: CreateTaskForm): Promise<Task> {
-    const response = await fetch(`${API_URL}`, {
+    const response = await fetch(`${API_URL}/`, {
         method: "POST",
         credentials: "include",
         headers: {
