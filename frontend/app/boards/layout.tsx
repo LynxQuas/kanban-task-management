@@ -7,7 +7,7 @@ type BoardLayoutProps = {
     children: React.ReactNode;
 };
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
+const API_URL = `${process.env.API_URL}/auth`;
 
 const BoardLayout = async ({ children }: BoardLayoutProps) => {
     const cookieStore = await cookies();
