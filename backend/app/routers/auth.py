@@ -82,7 +82,7 @@ def login(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # True when using HTTPS in production
+        secure=True,
         samesite="lax",
         max_age=60 * 30,
     )
@@ -106,7 +106,7 @@ def logout(response: Response):
     response.delete_cookie(
         key="access_token",
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="lax",
     )
 
