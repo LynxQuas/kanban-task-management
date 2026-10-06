@@ -3,7 +3,7 @@ import { Board, CreateBoardInput } from "./types/board";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/boards`;
 
 export async function getBoards() {
-    const response = await fetch(`${API_URL}`, {
+    const response = await fetch(`${API_URL}/`, {
         credentials: "include",
     });
 
