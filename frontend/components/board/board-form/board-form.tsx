@@ -89,6 +89,7 @@ const BoardForm = ({ onClose, boardData }: BoardFormProps) => {
                 isEditing={isEditing}
                 onClose={onClose}
                 isPending={isPending}
+                label="board"
             />
         </form>
     );

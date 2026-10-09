@@ -4,14 +4,16 @@ type TaskFormActionsProps = {
     onClose: () => void;
     isPending: boolean;
     isEditing: boolean;
+    label?: string;
 };
 
 const FormActions = ({
     onClose,
     isPending,
     isEditing,
+    label = "task",
 }: TaskFormActionsProps) => {
-    const submitButtonText = isEditing ? "Update task" : "Create task";
+    const submitButtonText = isEditing ? `Update ${label}` : `Create ${label}`;
     const loadingText = isEditing ? "Updating..." : "Creating...";
 
     return (
