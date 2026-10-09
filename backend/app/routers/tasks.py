@@ -145,11 +145,9 @@ def update_task(
         )
 
     if task_data.column_id is not None:
-        column = (
-            db.query(Column)
-            .filter(Column.id == task_data.column_id)
-            .first()
-        )
+        column = (db.query(Column).join(Board).filter(
+        Column.id == task_data.column_id,
+        Board.user_id == current_user.id).first())
 
         if not column:
             raise HTTPException(

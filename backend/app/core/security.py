@@ -8,14 +8,13 @@ from fastapi import Cookie, Depends, HTTPException, status
 from app.database import get_db
 from app.models.user import User
 
+from app.config import settings
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 password_hash = PasswordHash.recommended()
 
-SECRET_KEY = "your-secret-key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 def hash_password(password: str):
@@ -28,7 +27,7 @@ def verify_password(plain_password: str, hashed_password: str):
 
 def create_access_token(user_id: int):
     expire = datetime.now(timezone.utc) + timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        minutes=settings.access_token_expire_minutes
     )
 
     payload = {
@@ -38,8 +37,8 @@ def create_access_token(user_id: int):
 
     return jwt.encode(
         payload,
-        SECRET_KEY,
-        algorithm=ALGORITHM,
+        settings.secret_key,
+        algorithm=settings.algorithm
     )
 
 
@@ -58,8 +57,8 @@ def get_current_user(
     try:
         payload = jwt.decode(
             access_token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM],
+            settings.secret_key,
+            algorithms=[settings.algorithm],
         )
 
         user_id = payload.get("sub")

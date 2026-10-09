@@ -105,12 +105,10 @@ def update_board(
         if column_data.id is not None
     }
 
-    # Delete removed columns
     for column in board.columns:
         if column.id not in updated_column_ids:
             db.delete(column)
 
-    # Update existing columns / create new columns
     for column_data in board_data.columns:
 
         if column_data.id is not None and column_data.id in existing_columns:

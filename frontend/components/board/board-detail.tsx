@@ -24,10 +24,18 @@ const BoardDetail = ({ board_id }: BoardDetailProps) => {
         );
     }
 
-    if (isError || !board) {
+    if (isError) {
         return (
             <div className="flex h-full min-h-screen items-center justify-center bg-[#20212C]">
                 <ErrorUi errorText="Failed to load board" />
+            </div>
+        );
+    }
+
+    if (!board) {
+        return (
+            <div className="flex h-full min-h-screen items-center justify-center bg-[#20212C]">
+                <ErrorUi errorText="Board not found" />
             </div>
         );
     }
