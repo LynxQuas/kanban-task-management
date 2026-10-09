@@ -3,7 +3,10 @@ import z from "zod";
 export const createTaskSchema = z.object({
     title: z.string().trim().min(1, "Task title is required."),
 
-    description: z.string().trim().min(1, "Task description is required."),
+    description: z
+        .string()
+        .trim()
+        .min(10, "Description must be at least 10 characters."),
 
     column_id: z.number().int().positive("Column is required."),
 
